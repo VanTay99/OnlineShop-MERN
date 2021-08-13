@@ -1,0 +1,5 @@
+export const authContants={
+    LOGIN_REQUEST:'LOGIN_RESQUEST',
+    LOGIN_FAILURE:'LOGIN_FAILURE',
+    LOGIN_SUCCESS:'LOGIN_SUCCESS'
+}
