@@ -5,7 +5,7 @@ import Input from '../../components/UI/Input';
 import {login} from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import {isUserLoggedIn} from '../../actions';
+
 /**
 * @author
 * @function Signin
@@ -20,12 +20,6 @@ const Signin = (props) => {
   
   const dispatch=useDispatch();
 
-  useEffect(()=>{
-    if(!auth.authenticate){
-      dispatch(isUserLoggedIn());
-    }
-    
-  },[]);
 
   const userLogin= (e)=>{
     e.preventDefault();
@@ -58,7 +52,7 @@ const Signin = (props) => {
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit"  style={{ marginTop: "10px"}}>
                 Sign In
               </Button>
             </Form>
