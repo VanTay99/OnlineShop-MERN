@@ -62,9 +62,20 @@ export const isUserLoggedIn = () => {
 
 export const singout =()=>{
     return async dispatch =>{
-        localStorage.clear();
-        dispatch({
-            type: authContants.LOGOUT_REQUEST
-        });
+        
+        dispatch({type: authContants.LOGOUT_REQUEST});
+        const res =await axios.post(`/admin/signout`)
+        if(res.status===200){
+            localStorage.clear();
+            dispatch({
+                type: authContants.LOGOUT_SUCCESS
+            });
+        }
+        else{
+            dispatch({
+                type:authContants.LOGIN_FAILURE,
+                payload:{error:res.data.error}
+            });
+        } 
     }
 }
