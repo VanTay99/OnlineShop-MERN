@@ -56,7 +56,7 @@ exports.signin=(req,res)=>{
                          role,
                          fullName
                     }=user;
-                    res.cookie('token',token,{expiresIn:'1h'});
+                    res.cookie('token',token,{expiresIn:'1d'});
                     res.status(200).json({
                          token,
                          user:{

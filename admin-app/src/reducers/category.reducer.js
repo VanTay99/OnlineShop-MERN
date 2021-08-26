@@ -1,33 +1,63 @@
 import { categoryContants } from "../actions/constants";
 
-const initState={
-    categories:[],
-    loading :false,
-    error:null
+const initState = {
+    categories: [],
+    loading: false,
+    error: null
 };
+const buildNewCategory = (parentId,categories, category) => {
+    let myCategories = [];
+    for (let cat of categories) {
+        
+        if(cat._id==parentId){
+            myCategories.push({
+                ...cat,
+                children: cat.children && cat.children.length > 0 ? buildNewCategory(parentId,[...cat.children,{
+                    _id:category._id,
+                    name:category.name,
+                    slug:category.slug,
+                    parentId: category.parentId,
+                    children: category.children
+                }], category):[]
+            });
+        }
+        else{
+            myCategories.push({
+                ...cat,
+                children: cat.children && cat.children.length > 0 ? buildNewCategory(parentId,cat.children, category):[]
+            });
+        }
+        
+    }
+    return myCategories;
 
-export default (state=initState,action)=>{
-    switch(action.type){
+}
+export default (state = initState, action) => {
+    switch (action.type) {
         case categoryContants.GET_ALL_CATEGORIES_SUCCESS:
-            state={
+            state = {
                 ...state,
-                categories:action.payload.categories
+                categories: action.payload.categories
             }
             break;
         case categoryContants.ADD_NEW_CATEGORY_REQUEST:
-            state={
+            state = {
                 ...state,
-                loading:true
+                loading: true
             }
             break;
         case categoryContants.ADD_NEW_CATEGORY_SUCCESS:
-            state={
+            const category=action.payload.category;
+            const updatedCategories=buildNewCategory(category.parentId,state.categories, category);
+            console.log('update categories',updatedCategories);
+            state = {
                 ...state,
-                loading:false
+                categories:updatedCategories,
+                loading: false,
             }
             break;
         case categoryContants.ADD_NEW_CATEGORY_FAILURE:
-            state={
+            state = {
                 ...initState
             }
             break;
