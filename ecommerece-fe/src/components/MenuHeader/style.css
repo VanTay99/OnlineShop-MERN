@@ -5,7 +5,7 @@
     border-bottom: 1px solid #cecece;
     box-shadow: 0 2px 2px -2px #333;
 }
- .menuHeader ul{
+.menuHeader ul{
     list-style: none;
     margin: 0;
     padding: 0;
@@ -31,7 +31,7 @@
     left: 0;
     right: 0;
     display: none;
-    border: 5px solid #cecece;
+    border: 1px solid #cecece;
     z-index: 1;
 }
 .menuHeader > ul > li:hover ul{
@@ -40,6 +40,9 @@
 .menuHeader > ul > li > ul > li{
     margin: 0 20px;
     min-width: 150px;
+}
+.menuHeader > ul > li > ul > li{
+    float: left;
 }
 .menuHeader > ul > li > ul > li > a{
     font-weight: bold;
@@ -51,4 +54,4 @@
     font-size: 12px;
     text-decoration: none;
     color: #707070;
-} 
+}

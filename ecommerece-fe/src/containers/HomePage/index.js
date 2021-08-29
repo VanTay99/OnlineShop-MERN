@@ -1,5 +1,6 @@
 import React from 'react'
 import { Header } from '../../components/Header'
+import { Layout } from '../../components/Layout'
 import { MenuHeader } from '../../components/MenuHeader'
 
 
@@ -10,10 +11,9 @@ import { MenuHeader } from '../../components/MenuHeader'
 
 export const HomePage = (props) => {
   return(
-    <div>
-        <Header/>
-        <MenuHeader/>
-    </div>
+    <Layout>
+      HomePage
+    </Layout>
    )
 
  }
