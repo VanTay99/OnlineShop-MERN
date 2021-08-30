@@ -5,6 +5,15 @@ import { getAllCategory, addCategory } from '../../actions';
 import Layout from '../../components/Layout';
 import Input from '../../components/UI/Input';
 import Modal from '../../components/UI/Modal';
+import CheckboxTree from 'react-checkbox-tree';
+import {
+    IoIosCheckboxOutline,
+    IoIosCheckbox,
+    IoIosArrowForward,
+    IoIosArrowDown
+} from "react-icons/io";
+import 'react-checkbox-tree/lib/react-checkbox-tree.css'
+
 /**
 * @author
 * @function Category
@@ -16,6 +25,12 @@ const Category = (props) => {
     const [parentCategoryId, setParentCategoryId] = useState('');
     const [categoryImage, setCategoryImage] = useState('');
     const [show, setShow] = useState(false);
+    const [checked, setChecked] = useState([]);
+    const [expanded, setExpanded] = useState([]);
+    const [checkedArray, setCheckedArray] = useState([]);
+    const [expandedArray, setExpandedArray] = useState([]);
+    const [updateCategoryModal, setUpdatecategoryModal] = useState(false);
+
     const dispatch = useDispatch();
 
     const handleClose = () => {
@@ -27,12 +42,6 @@ const Category = (props) => {
         dispatch(addCategory(form));
         setCategoryName('');
         setParentCategoryId('');
-        // const cat={
-        //     categoryName,
-        //     parentCategoryId,
-        //     categoryImage
-        // };
-        // console.log(cat);
         setShow(false);
     }
 
@@ -42,10 +51,12 @@ const Category = (props) => {
         let Mycategories = [];
         for (let category of categories) {
             Mycategories.push(
-                <li key={category.name}>
-                    {category.name}
-                    {category.children.length > 0 ? (<ul>{renderCategories(category.children)}</ul>) : null}
-                </li>
+                {
+                    label: category.name,
+                    value: category._id,
+                    children: category.children.length > 0 && renderCategories(category.children)
+                }
+
             );
         }
         return Mycategories;
@@ -55,7 +66,8 @@ const Category = (props) => {
         for (let category of categories) {
             options.push({
                 value: category._id,
-                name: category.name
+                name: category.name,
+                parentId: category.parentId
             });
             if (category.children.length > 0) {
                 createCategoryList(category.children, options)
@@ -67,7 +79,34 @@ const Category = (props) => {
         setCategoryImage(e.target.files[0]);
 
     }
+    const updateCategory = () => {
+        setUpdatecategoryModal(true);
+        const categories = createCategoryList(category.categories);
+        const checkedArray = [];
+        const expandedArray = [];
+        checked.length > 0 && checked.forEach((categoryId, index) => {
+            const category = categories.find((category, _index) => categoryId == category.value);
+            category && checkedArray.push(category);
+        })
+        expanded.length > 0 && expanded.forEach((categoryId, index) => {
+            const category = categories.find((category, _index) => categoryId == category.value);
+            category && expandedArray.push(category);
+        })
+        setCheckedArray(checkedArray);
+        setExpandedArray(expandedArray);
+        console.log({ checked, expanded, categories, checkedArray, expandedArray });
+    }
+    const handleCategoryInput = (key, value, index, type) => {
+        if (type = "checked") {
+            const updatedCheckArray = checkedArray.map((item, _index) => index == _index ? { ...item, [key]: value } : item);
+            setCheckedArray(updatedCheckArray); 
 
+        } else if (type == "expanded") {
+            const updatedExpandedArray = expandedArray.map((item, _index) => index == _index ? { ...item, [key]: value } : item);
+            setExpandedArray(updatedExpandedArray); 
+        }
+
+    }
     return (
         <Layout sidebar>
             <Container>
@@ -82,10 +121,31 @@ const Category = (props) => {
                 </Row>
                 <Row>
                     <Col md={12}>
-                        <ul>
+                        {/* <ul>
                             {renderCategories(category.categories)}
 
-                        </ul>
+                        </ul> */}
+                        <CheckboxTree
+                            nodes={renderCategories(category.categories)}
+                            checked={checked}
+                            expanded={expanded}
+                            onCheck={checked => setChecked(checked)}
+                            onExpand={expanded => setExpanded(expanded)}
+                            icons={{
+                                check: <IoIosCheckbox />,
+                                uncheck: <IoIosCheckboxOutline />,
+                                halfCheck: <IoIosCheckboxOutline />,
+                                expandClose: <IoIosArrowForward />,
+                                expandOpen: <IoIosArrowDown />,
+                            }}
+
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Button variant="danger">delete</Button>
+                        <Button variant="info" onClick={updateCategory}>Edit</Button>
                     </Col>
                 </Row>
             </Container>
@@ -112,6 +172,104 @@ const Category = (props) => {
                 <input type="file" name="categoryImage" onChange={handleCategoryImage} />
 
             </Modal>
+            <br/>
+            {/* Edit category */}
+            <Modal
+                show={updateCategoryModal}
+                handleClose={() => setUpdatecategoryModal(false)}
+                modalTitle={'Update Categories'}
+                size='lg'
+            >
+                <Row>
+                    <Col>
+                        <h6>Expanded</h6>
+                    </Col>
+                </Row>
+                <br/>
+                {
+                    expandedArray.length > 0 &&
+                    expandedArray.map((item, index) =>
+                        <Row key={index}>
+                            <Col>
+                                <Input
+                                    value={item.name}
+                                    placeholder={`Category Name`}
+                                    onChange={(e) => handleCategoryInput('name', e.target.value, index, 'expanded')}
+                                />
+                            </Col>
+                            <br />
+                            <Col>
+                                <select 
+                                    className="form-control" 
+                                    value={item.parentId} 
+                                    onChange={(e) => handleCategoryInput('parentId', e.target.value, index, 'expanded')}>
+                                    <option>select Category</option>
+                                    {
+                                        createCategoryList(category.categories).map(option =>
+                                            <option key={option.value} value={option.value}>{option.name}</option>)
+                                    }
+                                </select>
+                            </Col>
+                            <br />
+                            <Col>
+                                <select className="form-control">
+                                    <option value="">Select Type</option>
+                                    <option value="store">Store</option>
+                                    <option value="product">Product</option>
+                                    <option value="page">page</option>
+                                </select>
+                            </Col>
+                           
+                        </Row>
+                          
+                    )
+                   
+                }
+                 <br/>
+                <h6>Checked Categories</h6>
+                {
+                    checkedArray.length > 0 &&
+                    checkedArray.map((item, index) =>
+                        <Row key={index}>
+                            <Col>
+                                <Input
+                                    value={item.name}
+                                    placeholder={`Category Name`}
+                                    onChange={(e) => handleCategoryInput('name', e.target.value, index, 'checked')}
+                                />
+                            </Col>
+                            <br />
+                            <Col>
+                                <select 
+                                    className="form-control" 
+                                    value={item.parentId} 
+                                    onChange={(e) => handleCategoryInput('parentId', e.target.value, index, 'checked')}>
+                                    <option>select Category</option>
+                                    {
+                                        createCategoryList(category.categories).map(option =>
+                                            <option key={option.value} value={option.value}>{option.name}</option>)
+                                    }
+                                </select>
+                            </Col>
+                            <br />
+                            <Col>
+                                <select className="form-control">
+                                    <option value="">Select Type</option>
+                                    <option value="store">Store</option>
+                                    <option value="product">Product</option>
+                                    <option value="page">page</option>
+                                </select>
+                            </Col>
+                            <br />
+                        </Row>
+                    )
+                }
+
+
+                {/* <input type="file" name="categoryImage" onChange={handleCategoryImage} /> */}
+
+            </Modal>
+            <br />
         </Layout>
     )
 
