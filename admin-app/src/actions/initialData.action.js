@@ -20,7 +20,7 @@ import {
           type: productContants.GET_ALL_PRODUCTS_SUCCESS,
           payload: { products }
         });
-        console.log(res);
+       //console.log(res);
       }
       
     }
