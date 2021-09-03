@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
-
+import { IoIosSave } from "react-icons/io";
 /**
 * @author
 * @function Modal
@@ -21,8 +21,14 @@ export const NewModal = (props) => {
                         <Button key={index} variant={btn.color} onClick={btn.onClick}>
                             {btn.label}
                         </Button>):
-                <Button variant="primary" onClick={props.handleClose}>
-                    Save Changes
+                <Button 
+                    variant="primary"
+                    {...props }
+                    style={{backgroundColor:'#333'}}
+                    className="btn-sm" 
+                    onClick={props.handleClose}> 
+                    <IoIosSave />
+                   Save
                 </Button>
                 }
             </Modal.Footer>
