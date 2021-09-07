@@ -75,7 +75,8 @@ const Category = (props) => {
             options.push({
                 value: category._id,
                 name: category.name,
-                parentId: category.parentId
+                parentId: category.parentId,
+                type:category.type
             });
             if (category.children.length > 0) {
                 createCategoryList(category.children, options)
@@ -132,13 +133,7 @@ const Category = (props) => {
             form.append('parentId', item.parentId ? item.parentId : "");
             form.append('type', item.type);
         })
-        dispatch(updateCategories(form))
-            .then(result => {
-                if (result) {
-                    dispatch(getAllCategory())
-                }
-            })
-
+        dispatch(updateCategories(form));
         setUpdatecategoryModal(false);
     }
 
@@ -159,6 +154,8 @@ const Category = (props) => {
                     }
                 })
         }
+        setDeleteCategoryModal(false);
+
     }
     const renderDeleteCategoryModal = () => {
         console.log('delete', checkedArray);

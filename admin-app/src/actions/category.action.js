@@ -1,7 +1,7 @@
 import axios from "../helpers/axios"
 import { categoryContants } from "./constants";
 
-export const getAllCategory = () => {
+const getAllCategory = () => {
     return async dispatch => {
 
         dispatch({
@@ -53,14 +53,18 @@ export const addCategory = (form) => {
 
 export const updateCategories = (form) => {
     return async dispatch => {
-
+        dispatch({type: categoryContants.UPDATE_CATEGORIES_REQUEST});
         const res = await axios.post(`/category/update`, form);
         if (res.status === 201) {
-            return true;
-            console.log(res);
+            dispatch({type:categoryContants.UPDATE_CATEGORIES_SUCCESS});
+            dispatch(getAllCategory());
         }
         else {
-            console.log(res);
+            const {error}=res.data;
+           dispatch({
+               type:categoryContants.UPDATE_CATEGORIES_FAILURE,
+               paload:{error}
+           });
         }
     }
 }
@@ -68,23 +72,25 @@ export const updateCategories = (form) => {
 
 export const deleteCategories = (ids) => {
     return async dispatch => {
-        //dispatch({ type: categoryContants.DELETE_CATEGORIES_REQUEST });
+        dispatch({ type: categoryContants.DELETE_CATEGORIES_REQUEST });
         const res = await axios.post(`/category/delete`, {
             payload: {
                 ids
             }
         });
         if (res.status == 201) {
-            // dispatch(getAllCategory());
-            // dispatch({ type: categoryContants.DELETE_CATEGORIES_SUCCESS });
-            return true;
+            dispatch(getAllCategory());
+            dispatch({ type: categoryContants.DELETE_CATEGORIES_SUCCESS });
+           
         } else {
-            // const { error } = res.data;
-            // dispatch({
-            //     type: categoryContants.DELETE_CATEGORIES_FAILURE,
-            //     payload: { error }
-            // });
-            return false;
+            const { error } = res.data;
+            dispatch({
+                type: categoryContants.DELETE_CATEGORIES_FAILURE,
+                payload: { error}
+            });
         }
     }
+}
+export {
+    getAllCategory
 }

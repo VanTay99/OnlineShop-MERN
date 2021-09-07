@@ -11,6 +11,7 @@ const categoryRoutes=require('./routes/category');
 const productRoutes=require('./routes/product');
 const cartRoutes=require('./routes/cart');
 const initialDataRoutes=require("./routes/admin/initialData");
+mongoose.set('useFindAndModify', false);
 //environment variable or you  can say constants
 env.config();
 
@@ -21,7 +22,8 @@ mongoose.connect(
     {
         useNewUrlParser: true, 
         useUnifiedTopology: true,
-        useCreateIndex:true
+        useCreateIndex:true,
+        useFindAndModify: false 
     }
 ).then(()=>{
     console.log('Database connected');
