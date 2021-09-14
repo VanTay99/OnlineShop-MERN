@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const pageSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -23,17 +22,18 @@ const pageSchema = new mongoose.Schema({
             navigateTo: { type: String }
         }
     ],
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
-        required: true
+    category: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Category', 
+        required: true ,
+        unique: true
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }
-
 }, { timestamps: true });
+
 
 module.exports = mongoose.model('Page', pageSchema);

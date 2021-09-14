@@ -82,7 +82,7 @@ export const NewPage = (props) => {
             <Modal
                 show={createModal}
                 modalTitle={'Create New Page'}
-                handleClose={()=>setCreateModal(false)}
+                handleClose={() => setCreateModal(false)}
                 onSubmit={submitPageForm}
             >
                 <Container>
@@ -99,7 +99,7 @@ export const NewPage = (props) => {
                                     )
                                 }
                             </select> */}
-                            <Input 
+                            <Input
                                 type="select"
                                 value={categoryId}
                                 onChange={onCategoryChange}
@@ -141,6 +141,7 @@ export const NewPage = (props) => {
                     }
 
                     <Row>
+                        <p>Images Banners</p>
                         <Col>
                             <Input
                                 className="form-control"
@@ -161,6 +162,7 @@ export const NewPage = (props) => {
                     }
 
                     <Row>
+                        <p> Images Product</p>
                         <Col>
                             <Input
                                 className="form-control"
@@ -180,14 +182,14 @@ export const NewPage = (props) => {
         <Layout sidebar>
             {
                 page.loading ?
-                <p> Create Page___please wait</p>
+                    <p> Create Page___please wait</p>
                     :
-                    <> 
-                     {renderCreatePageModal()}
-                    <button onClick={() => setCreateModal(true)}>Create Page</button>
-                    </>     
+                    <>
+                        {renderCreatePageModal()}
+                        <button onClick={() => setCreateModal(true)}>Create Page</button>
+                    </>
             }
-            
+
         </Layout>
     );
 };
