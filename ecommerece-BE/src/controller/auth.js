@@ -1,11 +1,10 @@
 const User = require('../models/user');
-const jwt=require('jsonwebtoken');
-const {validationResult}=require('express-validator');
-const bcrypt=require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 const shortid = require('shortid');
-exports.signup = (req, res) =>
-     {
-          User.findOne({ email: req.body.email })
+exports.signup = (req, res) => {
+     User.findOne({ email: req.body.email })
           .exec(async (error, user) => {
                if (user)
                     return res.status(400).json({
@@ -17,7 +16,7 @@ exports.signup = (req, res) =>
                     email,
                     password
                } = req.body;
-               const hash_password= await bcrypt.hash(password,10);
+               const hash_password = await bcrypt.hash(password, 10);
                const _user = new User({
                     firstName,
                     lastName,
@@ -28,59 +27,58 @@ exports.signup = (req, res) =>
                _user.save((error, user) => {
                     if (error) {
                          return res.status(400).json({
-                              message:error
+                              message: error
                          });
-                    }  
-                    if(user)
-                    {
-                         return res.status(201).json({ 
-                              message:"User create successfully"
-                          });
+                    }
+                    if (user) {
+                         return res.status(201).json({
+                              message: "User create successfully"
+                         });
                     }
 
-                   
+
                });
           });
-     }
-exports.signin=(req,res)=>{
-     User.findOne({email:req.body.email})
-     .exec((error,user)=>{
-          if(error) return res.status(400).json({error});
-          if(user){
-               if(user.authenticate(req.body.password)){
-                    const token =jwt.sign({_id:user._id,role: user.role},process.env.JWT_SECRET,{expiresIn:'1h'});
-                    const{
-                         _id,
-                         firstName,
-                         lastName,
-                         email,
-                         role,
-                         fullName
-                    }=user;
-                    res.status(200).json({
-                         token,
-                         user:{
+}
+exports.signin = (req, res) => {
+     User.findOne({ email: req.body.email })
+          .exec((error, user) => {
+               if (error) return res.status(400).json({ error });
+               if (user) {
+                    if (user.authenticate(req.body.password) && user.role === 'user') {
+                         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+                         const {
                               _id,
                               firstName,
                               lastName,
                               email,
                               role,
                               fullName
-                         }
+                         } = user;
+                         res.status(200).json({
+                              token,
+                              user: {
+                                   _id,
+                                   firstName,
+                                   lastName,
+                                   email,
+                                   role,
+                                   fullName
+                              }
+                         });
+                    }
+                    else {
+                         return res.status(400).json({
+                              message: "Something went wrong"
+                         })
+                    }
+               }
+
+               else {
+                    return res.status(400).json({
+                         message: error
                     });
                }
-               else{
-                    return res.status(400).json({
-                         message:"Invalid password"
-                    })
-               }
-          }
-          
-          else{
-               return res.status(400).json({
-                    message:error
-               });
-          }
-     });
+          });
 }
 
