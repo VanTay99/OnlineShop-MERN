@@ -1,4 +1,4 @@
-import { categoryContants } from "../actions/constants";
+import { categoryConstants } from "../actions/constants";
 
 const initState = {
     categories: [],
@@ -48,19 +48,19 @@ const buildNewCategory = (parentId,categories, category) => {
 }
 export default (state = initState, action) => {
     switch (action.type) {
-        case categoryContants.GET_ALL_CATEGORIES_SUCCESS:
+        case categoryConstants.GET_ALL_CATEGORIES_SUCCESS:
             state = {
                 ...state,
                 categories: action.payload.categories
             }
             break;
-        case categoryContants.ADD_NEW_CATEGORY_REQUEST:
+        case categoryConstants.ADD_NEW_CATEGORY_REQUEST:
             state = {
                 ...state,
                 loading: true
             }
             break;
-        case categoryContants.ADD_NEW_CATEGORY_SUCCESS:
+        case categoryConstants.ADD_NEW_CATEGORY_SUCCESS:
             const category=action.payload.category;
             const updatedCategories=buildNewCategory(category.parentId,state.categories, category);
             console.log('update categories',updatedCategories);
@@ -70,7 +70,7 @@ export default (state = initState, action) => {
                 loading: false,
             }
             break;
-        case categoryContants.ADD_NEW_CATEGORY_FAILURE:
+        case categoryConstants.ADD_NEW_CATEGORY_FAILURE:
             state = {
                 ...initState
             }

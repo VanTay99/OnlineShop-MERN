@@ -1,13 +1,13 @@
 
 import axios from "../helpers/axios";
 
-import { authContants } from "./constants";
+import { authConstants } from "./constants";
 
 export const login = (user) => {
 
     console.log(user);
     return async (dispatch) => {
-        dispatch({ type: authContants.LOGIN_REQUEST })
+        dispatch({ type: authConstants.LOGIN_REQUEST })
         const res = await axios.post(`/signin`, {
             ...user
         });
@@ -16,7 +16,7 @@ export const login = (user) => {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
             dispatch({
-                type: authContants.LOGIN_SUCCESS,
+                type: authConstants.LOGIN_SUCCESS,
                 payload: {
                     token, user
                 }
@@ -26,7 +26,7 @@ export const login = (user) => {
         else {
             if (res.status === 400) {
                 dispatch({
-                    type: authContants.LOGIN_FAILURE,
+                    type: authConstants.LOGIN_FAILURE,
                     payload: { error: res.data.error }
                 });
             }
@@ -44,7 +44,7 @@ export const isUserLoggedIn = () => {
         if (token) {
             const user = JSON.parse(localStorage.getItem('user'));
             dispatch({
-                type: authContants.LOGIN_SUCCESS,
+                type: authConstants.LOGIN_SUCCESS,
                 payload: {
                     token, user
                 }
@@ -53,7 +53,7 @@ export const isUserLoggedIn = () => {
         }
         else {
             dispatch({
-                type: authContants.LOGIN_FAILURE,
+                type: authConstants.LOGIN_FAILURE,
                 payload: { error: 'Failed to login' }
             });
         }
@@ -63,19 +63,21 @@ export const isUserLoggedIn = () => {
 export const singout =()=>{
     return async dispatch =>{
         
-        dispatch({type: authContants.LOGOUT_REQUEST});
-        const res =await axios.post(`/admin/signout`)
-        if(res.status===200){
-            localStorage.clear();
-            dispatch({
-                type: authContants.LOGOUT_SUCCESS
-            });
-        }
-        else{
-            dispatch({
-                type:authContants.LOGIN_FAILURE,
-                payload:{error:res.data.error}
-            });
-        } 
+        dispatch({type: authConstants.LOGOUT_REQUEST});
+        localStorage.clear();
+        dispatch({type:authConstants.LOGOUT_SUCCESS});
+        // const res =await axios.post(`/admin/signout`)
+        // if(res.status===200){
+        //     localStorage.clear();
+        //     dispatch({
+        //         type: authConstants.LOGOUT_SUCCESS
+        //     });
+        // }
+        // else{
+        //     dispatch({
+        //         type:authConstants.LOGIN_FAILURE,
+        //         payload:{error:res.data.error}
+        //     });
+        // } 
     }
 }
