@@ -28,13 +28,14 @@ const MaterialInput = (props) => {
     const [focus, setFocus] = useState(false);
 
     return (
-        <div className="materialInput">
+        <div className="materialInput" style ={{paddingLeft: '20px'}}>
             <label className={`label ${focus ? 'focus' : ''}`} style={{
                 top: 0,
                 lineHeight: 'none'
             }}>{props.label}</label>
             <div style={{
-                display: 'flex'
+                display: 'flex',
+                alignItems: 'center'
             }}>
                 <input className="input"
                     type={props.type}

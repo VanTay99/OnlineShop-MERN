@@ -20,8 +20,9 @@ function App() {
   },[auth.authenticate]);
 
   useEffect(()=>{
-    dispatch(updateCart())
-  },[]);
+    console.log('App.js - update Cart')
+    dispatch(updateCart());
+  },[auth.authenticate]);
 
   return (
     <div className="App">
